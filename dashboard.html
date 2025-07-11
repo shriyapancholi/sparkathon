@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - EcoPoints</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#2C5F2D',
+                        'secondary': '#97BC62',
+                        'bg-custom': '#FAF9F6',
+                        'success': '#3BB273',
+                        'danger': '#D9534F',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-bg-custom min-h-screen">
+    <header class="bg-primary text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
+                        <span class="text-primary font-bold">🌱</span>
+                    </div>
+                    <h1 class="text-2xl font-bold">EcoPoints</h1>
+                </div>
+                <nav class="hidden md:flex space-x-6 items-center">
+                    <a href="dashboard.html" class="text-secondary font-semibold">Dashboard</a>
+                    <a href="info.html" class="hover:text-secondary transition-colors">Info Hub</a>
+                    <a href="eco-report.html" class="hover:text-secondary transition-colors">Eco Report</a>
+                    <a href="leaderboard.html" class="hover:text-secondary transition-colors">Leaderboard</a>
+                    <a href="contact.html" class="hover:text-secondary transition-colors">Contact</a>
+                    <button onclick="logout()" class="bg-danger px-4 py-1 rounded-lg text-white font-medium hover:bg-opacity-90">Logout</button>
+                </nav>
+                <button id="mobileMenuBtn" class="md:hidden">
+                    <span class="text-2xl">☰</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-primary mb-2">Welcome back, <span id="userName">EcoWarrior</span>! 🌟</h2>
+            <p class="text-gray-600">Here's your sustainability journey so far</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
+                <div class="w-16 h-16 bg-success bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-2xl">🏆</span>
+                </div>
+                <h3 class="text-2xl font-bold text-primary mb-2" id="totalPoints">1,250</h3>
+                <p class="text-gray-600">Total EcoPoints</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
+                <div class="w-16 h-16 bg-secondary bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-2xl">💰</span>
+                </div>
+                <h3 class="text-2xl font-bold text-primary mb-2" id="moneySaved">₹2,340</h3>
+                <p class="text-gray-600">Money Saved</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
+                <div class="w-16 h-16 bg-success bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-2xl">🌍</span>
+                </div>
+                <h3 class="text-2xl font-bold text-primary mb-2" id="co2Saved">45.2 kg</h3>
+                <p class="text-gray-600">CO₂ Saved</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+            <h3 class="text-xl font-semibold text-primary mb-4">Progress to Next Badge</h3>
+            <div class="flex items-center space-x-4">
+                <div class="flex-1">
+                    <div class="flex justify-between text-sm text-gray-600 mb-2">
+                        <span>Eco Champion</span>
+                        <span>1,250 / 2,000 points</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-3">
+                        <div class="bg-success h-3 rounded-full" style="width: 62.5%"></div>
+                    </div>
+                </div>
+                <div class="text-4xl">🥇</div>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <button onclick="showBarcodeModal()" 
+        class="bg-primary text-white p-6 rounded-2xl shadow-lg hover:bg-opacity-90 transition-colors text-left">
+    <div class="flex items-center space-x-4">
+        <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+            <span class="text-2xl">🎫</span>
+        </div>
+        <div>
+            <h4 class="text-lg font-semibold">Your Barcode</h4>
+            <p class="text-sm opacity-90">Show this at store to earn points</p>
+        </div>
+    </div>
+</button>
+            <button onclick="simulateTransaction()" 
+                    class="bg-secondary text-primary p-6 rounded-2xl shadow-lg hover:bg-opacity-90 transition-colors text-left">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-primary bg-opacity-20 rounded-full flex items-center justify-center">
+                        <span class="text-2xl">🛒</span>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold">Simulate Purchase</h4>
+                        <p class="text-sm opacity-90">Test earning points (Demo)</p>
+                    </div>
+                </div>
+            </button>
+        </div>
+
+        <!-- Barcode Modal -->
+        <div id="barcodeModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+            <div class="bg-white rounded-2xl p-8 max-w-sm mx-4 text-center">
+                <h3 class="text-xl font-semibold text-primary mb-4">Here’s Your EcoPoints Barcode 🎉</h3>
+                <svg id="barcodeCanvas" class="mx-auto w-[300px] max-w-full h-auto mb-4"></svg>
+                <p class="text-sm text-gray-600 mb-4">Use this barcode at the store to earn your EcoPoints and make the planet greener! 🌱</p>
+                <button onclick="closeBarcodeModal()" 
+                    class="w-full bg-secondary text-primary py-2 px-4 rounded-lg font-semibold hover:bg-opacity-90 transition-colors">
+                    Close
+                </button>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <h3 class="text-xl font-semibold text-primary mb-4">Points Over Time</h3>
+                <canvas id="pointsChart" width="400" height="200"></canvas>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <h3 class="text-xl font-semibold text-primary mb-4">Category Breakdown</h3>
+                <canvas id="categoryChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h3 class="text-xl font-semibold text-primary mb-4">Recent Transactions</h3>
+            <div id="transactionsList" class="space-y-4"></div>
+        </div>
+    </main>
+
+    <div id="qrModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 max-w-sm mx-4">
+            <h3 class="text-xl font-semibold text-primary mb-4 text-center">Your EcoPoints Barcode</h3>
+            <div id="modalQRCode" class="flex justify-center mb-4"></div>
+            <p class="text-sm text-gray-600 text-center mb-4">Show this barcode at the store after your purchase</p>
+            <div class="space-y-3">
+                <button onclick="downloadQR()" 
+                        class="w-full bg-secondary text-primary py-2 px-4 rounded-lg font-semibold hover:bg-opacity-90 transition-colors">
+                    Download Barcode
+                </button>
+                <button onclick="closeQRModal()" 
+                        class="w-full bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="firebase-config.js"></script>
+    <script src="ui.js"></script>
+    <script>
+        window.addEventListener('load', function() {
+            loadUserData();
+            loadTransactions();
+            initializeCharts();
+        });
+
+        function loadUserData() {
+            const userData = JSON.parse(localStorage.getItem('ecoPointsUser') || '{}');
+            if (userData.name) {
+                document.getElementById('userName').textContent = userData.name;
+                document.getElementById('totalPoints').textContent = userData.points || 1250;
+                const points = userData.points || 1250;
+                const moneySaved = Math.floor(points * 1.87);
+                const co2Saved = (points * 0.036).toFixed(1);
+                document.getElementById('moneySaved').textContent = `₹${moneySaved}`;
+                document.getElementById('co2Saved').textContent = `${co2Saved} kg`;
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('ecoPointsUser');
+            alert("You've been logged out successfully! \nThanks for contributing to a greener tomorrow.\nRedirecting to sign-in...");
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        }
+
+        function showQRModal() {
+            const userData = JSON.parse(localStorage.getItem('ecoPointsUser') || '{}');
+            if (userData.id) {
+                const qrContainer = document.getElementById('modalQRCode');
+                qrContainer.innerHTML = '';
+                QRCode.toCanvas(qrContainer, userData.id, {
+                    width: 200,
+                    height: 200,
+                    colorDark: '#2C5F2D',
+                    colorLight: '#FFFFFF',
+                    margin: 2
+                });
+                document.getElementById('qrModal').classList.remove('hidden');
+            }
+        }
+
+        function closeQRModal() {
+            document.getElementById('qrModal').classList.add('hidden');
+        }
+
+        function downloadQR() {
+            const canvas = document.querySelector('#modalQRCode canvas');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = 'ecopoints-barcode.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            }
+        }
+
+        function simulateTransaction() {
+            const userData = JSON.parse(localStorage.getItem('ecoPointsUser') || '{}');
+            const newPoints = Math.floor(Math.random() * 50) + 20;
+            const newAmount = Math.floor(Math.random() * 500) + 300;
+            userData.points = (userData.points || 1250) + newPoints;
+            const newTransaction = {
+                store: 'Demo Store',
+                date: 'Just now',
+                points: newPoints,
+                amount: newAmount,
+                icon: '🎉'
+            };
+            userData.transactions = userData.transactions || [];
+            userData.transactions.unshift(newTransaction);
+            localStorage.setItem('ecoPointsUser', JSON.stringify(userData));
+            loadUserData();
+            loadTransactions();
+            alert(`Congratulations! You earned ${newPoints} EcoPoints! 🎉`);
+        }
+
+        function loadTransactions() {
+            const userData = JSON.parse(localStorage.getItem('ecoPointsUser') || '{}');
+            const transactions = userData.transactions || [];
+            const transactionsList = document.getElementById('transactionsList');
+            transactionsList.innerHTML = '';
+            transactions.slice(0, 5).forEach(transaction => {
+                const el = document.createElement('div');
+                el.className = 'flex items-center justify-between p-4 bg-gray-50 rounded-lg';
+                el.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-success bg-opacity-20 rounded-full flex items-center justify-center">
+                            <span>${transaction.icon}</span>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-800">${transaction.store}</p>
+                            <p class="text-sm text-gray-600">${transaction.date}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-semibold text-success">+${transaction.points} points</p>
+                        <p class="text-sm text-gray-600">₹${transaction.amount}</p>
+                    </div>`;
+                transactionsList.appendChild(el);
+            });
+        }
+
+        function initializeCharts() {
+            new Chart(document.getElementById('pointsChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'EcoPoints',
+                        data: [200, 450, 680, 920, 1100, 1250],
+                        borderColor: '#3BB273',
+                        backgroundColor: 'rgba(59, 178, 115, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            new Chart(document.getElementById('categoryChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Organic Food', 'Eco Products', 'Reusable Items', 'Local Produce'],
+                    datasets: [{
+                        data: [35, 25, 20, 20],
+                        backgroundColor: ['#3BB273', '#97BC62', '#2C5F2D', '#68A85C']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        }
+
+        document.getElementById('qrModal').addEventListener('click', function(e) {
+            if (e.target === this) closeQRModal();
+        });
+
+        function showBarcodeModal() {
+  const userData = JSON.parse(localStorage.getItem('ecoPointsUser') || '{}');
+  if (userData.id) {
+    const barcodeCanvas = document.getElementById("barcodeCanvas");
+    barcodeCanvas.innerHTML = "";
+    JsBarcode(barcodeCanvas, userData.id, {
+      format: "CODE128",
+      lineColor: "#2C5F2D",
+      width: 2,
+      height: 80,
+      displayValue: true
+    });
+    document.getElementById("barcodeModal").classList.remove("hidden");
+  }
+}
+
+function closeBarcodeModal() {
+  document.getElementById("barcodeModal").classList.add("hidden");
+}
+
+// Close modal if clicked outside
+document.getElementById("barcodeModal").addEventListener("click", function(e) {
+  if (e.target === this) {
+    closeBarcodeModal();
+  }
+});
+
+    </script>
+</body>
+</html>
+
+

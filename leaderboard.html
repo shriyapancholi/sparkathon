@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - EcoPoints</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#2C5F2D',
+                        'secondary': '#97BC62',
+                        'bg-custom': '#FAF9F6',
+                        'success': '#3BB273',
+                        'danger': '#D9534F',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-bg-custom min-h-screen">
+    <!-- Header -->
+    <header class="bg-primary text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
+                        <span class="text-primary font-bold">🌱</span>
+                    </div>
+                    <h1 class="text-2xl font-bold">EcoPoints</h1>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="dashboard.html" class="hover:text-secondary transition-colors">Dashboard</a>
+                    <a href="info.html" class="hover:text-secondary transition-colors">Info Hub</a>
+                    <a href="eco-report.html" class="hover:text-secondary transition-colors">Eco Report</a>
+                    <a href="leaderboard.html" class="text-secondary font-semibold">Leaderboard</a>
+                    <a href="contact.html" class="hover:text-secondary transition-colors">Contact</a>
+                    <button onclick="logout()" class="bg-danger px-4 py-1 rounded-lg text-white font-medium hover:bg-opacity-90">Logout</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Header Section -->
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-primary mb-4">🏆 Eco Champions Leaderboard</h2>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Celebrating our top sustainability heroes who are making a difference with every purchase!
+            </p>
+        </div>
+
+        <!-- Your Rank Card -->
+        <div id="userRankCard" class="bg-gradient-to-r from-primary to-success text-white rounded-2xl shadow-lg p-6 mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">Your Current Rank</h3>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-3xl font-bold">#<span id="userRank">12</span></span>
+                        <div>
+                            <p class="font-semibold" id="userNameDisplay">EcoWarrior</p>
+                            <p class="opacity-90"><span id="userPointsDisplay">1,250</span> EcoPoints</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-6xl opacity-20">🌟</div>
+            </div>
+        </div>
+
+        <!-- Top 3 Podium -->
+        <div class="grid md:grid-cols-3 gap-6 mb-12">
+            <!-- 2nd Place -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 text-center order-2 md:order-1">
+                <div class="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-3xl">🥈</span>
+                </div>
+                <h3 class="text-xl font-semibold text-primary mb-2">Priya Sharma</h3>
+                <p class="text-2xl font-bold text-gray-600 mb-2">2,845 points</p>
+                <p class="text-sm text-gray-500">Eco Enthusiast</p>
+                <div class="mt-4 flex justify-center space-x-2">
+                    <span class="px-2 py-1 bg-secondary bg-opacity-20 text-primary text-xs rounded-full">Mumbai</span>
+                </div>
+            </div>
+
+            <!-- 1st Place -->
+            <div class="bg-gradient-to-b from-yellow-400 to-yellow-500 text-white rounded-2xl shadow-lg p-6 text-center order-1 md:order-2 transform md:scale-110">
+                <div class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-4xl">👑</span>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Rajesh Kumar</h3>
+                <p class="text-3xl font-bold mb-2">3,420 points</p>
+                <p class="text-sm opacity-90">Eco Champion</p>
+                <div class="mt-4 flex justify-center space-x-2">
+                    <span class="px-2 py-1 bg-white bg-opacity-20 text-xs rounded-full">Delhi</span>
+                </div>
+            </div>
+
+            <!-- 3rd Place -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 text-center order-3">
+                <div class="w-20 h-20 bg-orange-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-3xl">🥉</span>
+                </div>
+                <h3 class="text-xl font-semibold text-primary mb-2">Anita Patel</h3>
+                <p class="text-2xl font-bold text-gray-600 mb-2">2,156 points</p>
+                <p class="text-sm text-gray-500">Green Warrior</p>
+                <div class="mt-4 flex justify-center space-x-2">
+                    <span class="px-2 py-1 bg-secondary bg-opacity-20 text-primary text-xs rounded-full">Bangalore</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full Leaderboard -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div class="bg-primary text-white p-6">
+                <h3 class="text-2xl font-semibold">Complete Rankings</h3>
+                <p class="opacity-90">All our amazing eco-warriors</p>
+            </div>
+            
+            <div class="divide-y divide-gray-200">
+                <!-- Leaderboard entries will be populated by JavaScript -->
+                <div id="leaderboardList">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Achievement Badges Section -->
+        <div class="mt-12">
+            <h3 class="text-2xl font-bold text-primary mb-6 text-center">Achievement Badges</h3>
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="bg-white rounded-xl shadow-md p-6 text-center">
+                    <div class="text-4xl mb-3">🌱</div>
+                    <h4 class="font-semibold text-primary mb-2">Eco Starter</h4>
+                    <p class="text-sm text-gray-600">100+ points</p>
+                </div>
+                <div class="bg-white rounded-xl shadow-md p-6 text-center">
+                    <div class="text-4xl mb-3">🌿</div>
+                    <h4 class="font-semibold text-primary mb-2">Green Warrior</h4>
+                    <p class="text-sm text-gray-600">500+ points</p>
+                </div>
+                <div class="bg-white rounded-xl shadow-md p-6 text-center">
+                    <div class="text-4xl mb-3">🏆</div>
+                    <h4 class="font-semibold text-primary mb-2">Eco Champion</h4>
+                    <p class="text-sm text-gray-600">2000+ points</p>
+                </div>
+                <div class="bg-white rounded-xl shadow-md p-6 text-center">
+                    <div class="text-4xl mb-3">👑</div>
+                    <h4 class="font-semibold text-primary mb-2">Planet Savior</h4>
+                    <p class="text-sm text-gray-600">5000+ points</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-primary text-white mt-16 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2024 EcoPoints. Making sustainability rewarding.</p>
+        </div>
+    </footer>
+
+    <script src="firebase-config.js"></script>
+    <script src="ui.js"></script>
+    <script>
+        // Leaderboard data
+        const leaderboardData = [
+            { rank: 1, name: 'Rajesh Kumar', points: 3420, city: 'Delhi', badge: 'Eco Champion', avatar: '👑' },
+            { rank: 2, name: 'Priya Sharma', points: 2845, city: 'Mumbai', badge: 'Eco Enthusiast', avatar: '🥈' },
+            { rank: 3, name: 'Anita Patel', points: 2156, city: 'Bangalore', badge: 'Green Warrior', avatar: '🥉' },
+            { rank: 4, name: 'Vikram Singh', points: 1987, city: 'Pune', badge: 'Green Warrior', avatar: '🌟' },
+            { rank: 5, name: 'Sneha Reddy', points: 1834, city: 'Hyderabad', badge: 'Green Warrior', avatar: '🌿' },
+            { rank: 6, name: 'Arjun Mehta', points: 1756, city: 'Chennai', badge: 'Green Warrior', avatar: '🌱' },
+            { rank: 7, name: 'Kavya Nair', points: 1623, city: 'Kochi', badge: 'Green Warrior', avatar: '♻️' },
+            { rank: 8, name: 'Rohit Gupta', points: 1545, city: 'Jaipur', badge: 'Green Warrior', avatar: '🌍' },
+            { rank: 9, name: 'Meera Joshi', points: 1432, city: 'Ahmedabad', badge: 'Green Warrior', avatar: '🌳' },
+            { rank: 10, name: 'Karan Malhotra', points: 1389, city: 'Chandigarh', badge: 'Green Warrior', avatar: '🍃' },
+            { rank: 11, name: 'Divya Agarwal', points: 1298, city: 'Lucknow', badge: 'Green Warrior', avatar: '🌺' },
+            { rank: 12, name: 'You', points: 1250, city: 'Your City', badge: 'Green Warrior', avatar: '🎯' },
+            { rank: 13, name: 'Suresh Yadav', points: 1187, city: 'Indore', badge: 'Eco Starter', avatar: '🌸' },
+            { rank: 14, name: 'Pooja Bansal', points: 1134, city: 'Nagpur', badge: 'Eco Starter', avatar: '🌼' },
+            { rank: 15, name: 'Amit Tiwari', points: 1089, city: 'Bhopal', badge: 'Eco Starter', avatar: '🌻' }
+        ];
+
+        window.addEventListener('load', function() {
+            loadUserRank();
+            populateLeaderboard();
+        });
+
+        function loadUserRank() {
+            const userData = JSON.parse(localStorage.getItem('ecoPointsUser') || '{}');
+            if (userData.name) {
+                document.getElementById('userNameDisplay').textContent = userData.name;
+                document.getElementById('userPointsDisplay').textContent = userData.points || 1250;
+                
+                // Find user rank based on points
+                const userPoints = userData.points || 1250;
+                let userRank = 12; // Default rank
+                
+                for (let i = 0; i < leaderboardData.length; i++) {
+                    if (leaderboardData[i].name === 'You') {
+                        leaderboardData[i].points = userPoints;
+                        leaderboardData[i].name = userData.name;
+                        break;
+                    }
+                }
+                
+                // Sort and find new rank
+                leaderboardData.sort((a, b) => b.points - a.points);
+                for (let i = 0; i < leaderboardData.length; i++) {
+                    leaderboardData[i].rank = i + 1;
+                    if (leaderboardData[i].name === userData.name) {
+                        userRank = i + 1;
+                        break;
+                    }
+                }
+                
+                document.getElementById('userRank').textContent = userRank;
+            }
+        }
+
+        function populateLeaderboard() {
+            const leaderboardList = document.getElementById('leaderboardList');
+            leaderboardList.innerHTML = '';
+
+            leaderboardData.forEach((user, index) => {
+                const isCurrentUser = user.name === JSON.parse(localStorage.getItem('ecoPointsUser') || '{}').name;
+                const entryElement = document.createElement('div');
+                entryElement.className = `p-4 hover:bg-gray-50 transition-colors ${isCurrentUser ? 'bg-secondary bg-opacity-10 border-l-4 border-secondary' : ''}`;
+                
+                entryElement.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 rounded-full flex items-center justify-center text-xl ${getRankColor(user.rank)}">
+                                ${user.rank <= 3 ? user.avatar : `#${user.rank}`}
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 ${isCurrentUser ? 'text-primary' : ''}">${user.name} ${isCurrentUser ? '(You)' : ''}</h4>
+                                <p class="text-sm text-gray-600">${user.badge} • ${user.city}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-lg text-primary">${user.points.toLocaleString()}</p>
+                            <p class="text-sm text-gray-600">points</p>
+                        </div>
+                    </div>
+                `;
+                
+                leaderboardList.appendChild(entryElement);
+            });
+        }
+
+        function getRankColor(rank) {
+            if (rank === 1) return 'bg-yellow-100 text-yellow-600';
+            if (rank === 2) return 'bg-gray-100 text-gray-600';
+            if (rank === 3) return 'bg-orange-100 text-orange-600';
+            return 'bg-primary bg-opacity-10 text-primary';
+        }
+
+        function logout() {
+    alert("You've been logged out successfully! 🌿\n\nCome back soon and keep earning EcoPoints for a greener planet! 🌍");
+    localStorage.removeItem('ecoPointsUser');
+    window.location.href = 'index.html';
+}
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - EcoPoints</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#2C5F2D',
+                        'secondary': '#97BC62',
+                        'bg-custom': '#FAF9F6',
+                        'success': '#3BB273',
+                        'danger': '#D9534F',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-bg-custom min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-primary text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
+                        <span class="text-primary font-bold">🌱</span>
+                    </div>
+                    <h1 class="text-2xl font-bold">EcoPoints</h1>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="index.html" class="hover:text-secondary transition-colors">Home</a>
+                    <a href="dashboard.html" class="hover:text-secondary transition-colors">Dashboard</a>
+                    <a href="eco-report.html" class="hover:text-secondary transition-colors">Eco Report</a>
+                    <a href="leaderboard.html" class="hover:text-secondary transition-colors">Leaderboard</a>
+                    <a href="contact.html" class="hover:text-secondary transition-colors">Contact</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex items-center justify-center px-4 py-16">
+        <div class="text-center max-w-2xl mx-auto">
+            <!-- 404 Illustration -->
+            <div class="mb-8">
+                <div class="text-9xl mb-4">🌱</div>
+                <h1 class="text-6xl font-bold text-primary mb-4">404</h1>
+                <div class="text-4xl mb-6">🔍</div>
+            </div>
+            
+            <!-- Error Message -->
+            <h2 class="text-3xl font-bold text-primary mb-4">Oops! Page Not Found</h2>
+            <p class="text-lg text-gray-600 mb-8 max-w-md mx-auto">
+                Looks like this page got lost in the forest! The page you're looking for doesn't exist or has been moved.
+            </p>
+            
+            <!-- Action Buttons -->
+            <div class="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
+                <a href="index.html" 
+                   class="inline-block bg-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors">
+                    🏠 Go Home
+                </a>
+                <a href="dashboard.html" 
+                   class="inline-block bg-secondary text-primary px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors">
+                    📊 Dashboard
+                </a>
+            </div>
+            
+            <!-- Helpful Links -->
+            <div class="mt-12 pt-8 border-t border-gray-200">
+                <h3 class="text-lg font-semibold text-primary mb-4">Maybe you were looking for:</h3>
+                <div class="grid sm:grid-cols-2 gap-4 max-w-md mx-auto">
+                    <a href="leaderboard.html" class="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
+                        <span>🏆</span>
+                        <span>Leaderboard</span>
+                    </a>
+                    <a href="contact.html" class="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
+                        <span>📞</span>
+                        <span>Contact Us</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-primary text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2024 EcoPoints. Making sustainability rewarding.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Auto-redirect after 10 seconds
+        setTimeout(() => {
+            if (confirm('Would you like to go back to the homepage?')) {
+                window.location.href = 'index.html';
+            }
+        }, 10000);
+    </script>
+</body>
+</html>

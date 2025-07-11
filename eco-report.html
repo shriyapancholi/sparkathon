@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco Report - EcoPoints</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#2C5F2D',
+                        'secondary': '#97BC62',
+                        'bg-custom': '#FAF9F6',
+                        'success': '#3BB273',
+                        'danger': '#D9534F',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .eco-gradient { background: linear-gradient(135deg, #2C5F2D 0%, #3BB273 100%); }
+        .report-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .report-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body class="bg-bg-custom min-h-screen">
+    <!-- Header -->
+    <header class="bg-primary text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
+                        <span class="text-primary font-bold">🌱</span>
+                    </div>
+                    <h1 class="text-2xl font-bold">EcoPoints</h1>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="dashboard.html" class="hover:text-secondary transition-colors">Dashboard</a>
+                    <a href="info.html" class="hover:text-secondary transition-colors">Info Hub</a>
+                    <a href="eco-report.html" class="text-secondary font-semibold">Eco Report</a>
+                    <a href="leaderboard.html" class="hover:text-secondary transition-colors">Leaderboard</a>
+                    <a href="contact.html" class="hover:text-secondary transition-colors">Contact</a>
+                    <button onclick="logout()" class="bg-danger px-4 py-1 rounded-lg text-white font-medium hover:bg-opacity-90">Logout</button>
+                </nav>
+                <button id="mobileMenuBtn" class="md:hidden">
+                    <span class="text-2xl">☰</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Header Section -->
+        <div class="text-center mb-8">
+            <h2 class="text-4xl font-bold text-primary mb-4">🌍 Your Eco Impact Report</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                Discover how your sustainable choices are making a real difference for our planet. Every purchase counts!
+            </p>
+        </div>
+
+        <!-- Report Period Selector -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <h3 class="text-xl font-semibold text-primary">Report Period</h3>
+                <div class="flex space-x-2">
+                    <button onclick="setReportPeriod('week')" id="weekBtn" class="px-4 py-2 rounded-lg font-medium transition-colors bg-primary text-white">This Week</button>
+                    <button onclick="setReportPeriod('month')" id="monthBtn" class="px-4 py-2 rounded-lg font-medium transition-colors bg-gray-200 text-gray-700 hover:bg-gray-300">This Month</button>
+                    <button onclick="setReportPeriod('year')" id="yearBtn" class="px-4 py-2 rounded-lg font-medium transition-colors bg-gray-200 text-gray-700 hover:bg-gray-300">This Year</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Environmental Impact Overview -->
+        <div class="grid md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-2xl shadow-lg p-6 text-center report-card">
+                <div class="w-16 h-16 eco-gradient rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-white text-2xl">🌍</span>
+                </div>
+                <h3 class="text-2xl font-bold text-primary mb-2" id="co2Saved">45.2 kg</h3>
+                <p class="text-gray-600">CO₂ Prevented</p>
+                <div class="mt-2 text-sm text-success">↑ 12% from last period</div>
+            </div>
+            
+            <div class="bg-white rounded-2xl shadow-lg p-6 text-center report-card">
+                <div class="w-16 h-16 bg-blue-500 bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-blue-600 text-2xl">💧</span>
+                </div>
+                <h3 class="text-2xl font-bold text-primary mb-2" id="waterSaved">1,250 L</h3>
+                <p class="text-gray-600">Water Saved</p>
+                <div class="mt-2 text-sm text-success">↑ 8% from last period</div>
+            </div>
+            
+            <div class="bg-white rounded-2xl shadow-lg p-6 text-center report-card">
+                <div class="w-16 h-16 bg-yellow-500 bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-yellow-600 text-2xl">⚡</span>
+                </div>
+                <h3 class="text-2xl font-bold text-primary mb-2" id="energySaved">89 kWh</h3>
+                <p class="text-gray-600">Energy Saved</p>
+                <div class="mt-2 text-sm text-success">↑ 15% from last period</div>
+            </div>
+            
+            <div class="bg-white rounded-2xl shadow-lg p-6 text-center report-card">
+                <div class="w-16 h-16 bg-purple-500 bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-purple-600 text-2xl">♻️</span>
+                </div>
+                <h3 class="text-2xl font-bold text-primary mb-2" id="wasteReduced">23.5 kg</h3>
+                <p class="text-gray-600">Waste Reduced</p>
+                <div class="mt-2 text-sm text-success">↑ 20% from last period</div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid lg:grid-cols-2 gap-8 mb-8">
+            <!-- Environmental Impact Over Time -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <h3 class="text-xl font-semibold text-primary mb-4">Environmental Impact Trend</h3>
+                <canvas id="impactChart" width="400" height="250"></canvas>
+            </div>
+            
+            <!-- Eco Categories Breakdown -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <h3 class="text-xl font-semibold text-primary mb-4">Sustainable Purchase Categories</h3>
+                <canvas id="categoriesChart" width="400" height="250"></canvas>
+            </div>
+        </div>
+
+        <!-- Detailed Metrics -->
+        <div class="grid lg:grid-cols-3 gap-8 mb-8">
+            <!-- Carbon Footprint Analysis -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <h3 class="text-xl font-semibold text-primary mb-4">🌱 Carbon Footprint</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Transportation</span>
+                        <span class="font-semibold text-success">-12.5 kg CO₂</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Food Choices</span>
+                        <span class="font-semibold text-success">-18.3 kg CO₂</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Energy Use</span>
+                        <span class="font-semibold text-success">-14.4 kg CO₂</span>
+                    </div>
+                    <div class="border-t pt-3 mt-3">
+                        <div class="flex justify-between items-center font-semibold">
+                            <span class="text-primary">Total Reduction</span>
+                            <span class="text-success">-45.2 kg CO₂</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resource Conservation -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <h3 class="text-xl font-semibold text-primary mb-4">💧 Resource Conservation</h3>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <span class="text-gray-600">Water Saved</span>
+                            <span class="font-semibold">1,250 L</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-500 h-2 rounded-full" style="width: 78%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <span class="text-gray-600">Energy Saved</span>
+                            <span class="font-semibold">89 kWh</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-yellow-500 h-2 rounded-full" style="width: 65%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <span class="text-gray-600">Waste Reduced</span>
+                            <span class="font-semibold">23.5 kg</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-purple-500 h-2 rounded-full" style="width: 82%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eco Achievements -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <h3 class="text-xl font-semibold text-primary mb-4">🏆 Eco Achievements</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-3 p-3 bg-success bg-opacity-10 rounded-lg">
+                        <span class="text-2xl">🌿</span>
+                        <div>
+                            <p class="font-semibold text-primary">Green Warrior</p>
+                            <p class="text-sm text-gray-600">500+ EcoPoints earned</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
+                        <span class="text-2xl">💧</span>
+                        <div>
+                            <p class="font-semibold text-primary">Water Saver</p>
+                            <p class="text-sm text-gray-600">1000L+ water conserved</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3 p-3 bg-yellow-50 rounded-lg">
+                        <span class="text-2xl">⚡</span>
+                        <div>
+                            <p class="font-semibold text-primary">Energy Efficient</p>
+                            <p class="text-sm text-gray-600">50+ kWh saved</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Community Comparison -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+            <h3 class="text-xl font-semibold text-primary mb-6">📊 Community Comparison</h3>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-success mb-2">125%</div>
+                    <p class="text-gray-600">Above Average CO₂ Reduction</p>
+                    <div class="mt-2 text-sm text-success">You're doing great! 🎉</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-primary mb-2">#12</div>
+                    <p class="text-gray-600">Rank in Your City</p>
+                    <div class="mt-2 text-sm text-gray-600">Out of 1,247 users</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-secondary mb-2">89%</div>
+                    <p class="text-gray-600">Sustainability Score</p>
+                    <div class="mt-2 text-sm text-success">Excellent performance!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Eco Tips & Recommendations -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+            <h3 class="text-xl font-semibold text-primary mb-6">💡 Personalized Eco Tips</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <div class="flex items-start space-x-3 p-4 bg-green-50 rounded-lg">
+                        <span class="text-2xl">🚲</span>
+                        <div>
+                            <h4 class="font-semibold text-primary">Try Cycling More</h4>
+                            <p class="text-sm text-gray-600">You could save an additional 8kg CO₂ by cycling to nearby stores instead of driving.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3 p-4 bg-blue-50 rounded-lg">
+                        <span class="text-2xl">🥬</span>
+                        <div>
+                            <h4 class="font-semibold text-primary">More Organic Choices</h4>
+                            <p class="text-sm text-gray-600">Increase organic food purchases by 20% to boost your environmental impact.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-start space-x-3 p-4 bg-yellow-50 rounded-lg">
+                        <span class="text-2xl">💡</span>
+                        <div>
+                            <h4 class="font-semibold text-primary">LED Upgrades</h4>
+                            <p class="text-sm text-gray-600">Switch remaining bulbs to LED to save 15 kWh monthly.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3 p-4 bg-purple-50 rounded-lg">
+                        <span class="text-2xl">♻️</span>
+                        <div>
+                            <h4 class="font-semibold text-primary">Reduce Packaging</h4>
+                            <p class="text-sm text-gray-600">Choose products with minimal packaging to reduce waste by 5kg monthly.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export & Share Section -->
+        <div class="bg-gradient-to-r from-primary to-success text-white rounded-2xl shadow-lg p-8 text-center">
+            <h3 class="text-2xl font-semibold mb-4">Share Your Impact! 🌟</h3>
+            <p class="mb-6 opacity-90">Inspire others by sharing your environmental achievements</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <button onclick="exportReport()" class="bg-white text-primary px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors">
+                    📄 Export Report
+                </button>
+                <button onclick="shareOnSocial()" class="bg-secondary text-primary px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors">
+                    📱 Share on Social
+                </button>
+                <button onclick="emailReport()" class="bg-white bg-opacity-20 text-white px-6 py-3 rounded-lg font-semibold hover:bg-opacity-30 transition-colors">
+                    ✉️ Email Report
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-primary text-white mt-16 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2024 EcoPoints. Making sustainability rewarding.</p>
+        </div>
+    </footer>
+
+    <script src="firebase-config.js"></script>
+    <script src="ui.js"></script>
+    <script>
+        let currentPeriod = 'week';
+
+        // Initialize the page
+        window.addEventListener('load', function() {
+            loadUserData();
+            initializeCharts();
+            updateMetrics();
+        });
+
+        function loadUserData() {
+            const userData = JSON.parse(localStorage.getItem('ecoPointsUser') || '{}');
+            if (!userData.name) {
+                // Redirect to home if no user data
+                window.location.href = 'index.html';
+            }
+        }
+
+        function setReportPeriod(period) {
+            currentPeriod = period;
+            
+            // Update button states
+            document.querySelectorAll('[id$="Btn"]').forEach(btn => {
+                btn.className = 'px-4 py-2 rounded-lg font-medium transition-colors bg-gray-200 text-gray-700 hover:bg-gray-300';
+            });
+            document.getElementById(period + 'Btn').className = 'px-4 py-2 rounded-lg font-medium transition-colors bg-primary text-white';
+            
+            // Update metrics and charts
+            updateMetrics();
+            updateCharts();
+        }
+
+        function updateMetrics() {
+            const multipliers = {
+                'week': 1,
+                'month': 4.3,
+                'year': 52
+            };
+            
+            const baseMetrics = {
+                co2: 45.2,
+                water: 1250,
+                energy: 89,
+                waste: 23.5
+            };
+            
+            const multiplier = multipliers[currentPeriod];
+            
+            document.getElementById('co2Saved').textContent = (baseMetrics.co2 * multiplier).toFixed(1) + ' kg';
+            document.getElementById('waterSaved').textContent = Math.round(baseMetrics.water * multiplier).toLocaleString() + ' L';
+            document.getElementById('energySaved').textContent = Math.round(baseMetrics.energy * multiplier) + ' kWh';
+            document.getElementById('wasteReduced').textContent = (baseMetrics.waste * multiplier).toFixed(1) + ' kg';
+        }
+
+        function initializeCharts() {
+            createImpactChart();
+            createCategoriesChart();
+        }
+
+        function updateCharts() {
+            // Destroy existing charts and recreate
+            Chart.getChart('impactChart')?.destroy();
+            Chart.getChart('categoriesChart')?.destroy();
+            createImpactChart();
+            createCategoriesChart();
+        }
+
+        function createImpactChart() {
+            const ctx = document.getElementById('impactChart').getContext('2d');
+            
+            const labels = currentPeriod === 'week' ? 
+                ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] :
+                currentPeriod === 'month' ?
+                ['Week 1', 'Week 2', 'Week 3', 'Week 4'] :
+                ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            const co2Data = currentPeriod === 'week' ?
+                [6.2, 8.1, 5.8, 7.3, 9.2, 4.5, 4.1] :
+                currentPeriod === 'month' ?
+                [42.5, 38.7, 45.2, 41.8] :
+                [520, 480, 560, 490, 530, 580, 610, 590, 570, 540, 520, 580];
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'CO₂ Saved (kg)',
+                        data: co2Data,
+                        borderColor: '#3BB273',
+                        backgroundColor: 'rgba(59, 178, 115, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Water Saved (L)',
+                        data: co2Data.map(val => val * 28), // Approximate ratio
+                        borderColor: '#3B82F6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: false,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'CO₂ (kg)'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Water (L)'
+                            },
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                        }
+                    }
+                }
+            });
+        }
+
+        function createCategoriesChart() {
+            const ctx = document.getElementById('categoriesChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Organic Food', 'Eco Products', 'Renewable Energy', 'Sustainable Transport', 'Waste Reduction'],
+                    datasets: [{
+                        data: [35, 25, 15, 15, 10],
+                        backgroundColor: [
+                            '#3BB273',
+                            '#97BC62',
+                            '#2C5F2D',
+                            '#68A85C',
+                            '#4A7C59'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function exportReport() {
+            // Create a simple text report
+            const userData = JSON.parse(localStorage.getItem('ecoPointsUser') || '{}');
+            const reportData = `
+EcoPoints Environmental Impact Report
+=====================================
+
+User: ${userData.name || 'EcoWarrior'}
+Period: ${currentPeriod.charAt(0).toUpperCase() + currentPeriod.slice(1)}
+Generated: ${new Date().toLocaleDateString()}
+
+Environmental Impact:
+- CO₂ Prevented: ${document.getElementById('co2Saved').textContent}
+- Water Saved: ${document.getElementById('waterSaved').textContent}
+- Energy Saved: ${document.getElementById('energySaved').textContent}
+- Waste Reduced: ${document.getElementById('wasteReduced').textContent}
+
+Achievements:
+- Green Warrior Badge
+- Water Saver Badge
+- Energy Efficient Badge
+
+Keep up the great work for our planet! 🌍
+            `;
+
+            // Create and download file
+            const blob = new Blob([reportData], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `eco-report-${currentPeriod}-${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            
+            showToast('Report exported successfully! 📄', 'success');
+        }
+
+        function shareOnSocial() {
+            const co2Saved = document.getElementById('co2Saved').textContent;
+            const text = `I've saved ${co2Saved} of CO₂ this ${currentPeriod} with @EcoPoints! 🌍 Join me in making sustainable choices that matter. #EcoPoints #Sustainability #ClimateAction`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My EcoPoints Impact Report',
+                    text: text,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback to copying to clipboard
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('Share text copied to clipboard! 📱', 'success');
+                });
+            }
+        }
+
+        function emailReport() {
+            const userData = JSON.parse(localStorage.getItem('ecoPointsUser') || '{}');
+            const subject = `My EcoPoints Environmental Impact Report - ${currentPeriod}`;
+            const body = `Hi there!
+
+I wanted to share my environmental impact achievements from EcoPoints:
+
+🌍 CO₂ Prevented: ${document.getElementById('co2Saved').textContent}
+💧 Water Saved: ${document.getElementById('waterSaved').textContent}
+⚡ Energy Saved: ${document.getElementById('energySaved').textContent}
+♻️ Waste Reduced: ${document.getElementById('wasteReduced').textContent}
+
+Every sustainable choice makes a difference! Join me at EcoPoints and let's save our planet together.
+
+Best regards,
+${userData.name || 'An EcoWarrior'}`;
+
+            const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;
+        }
+
+        // Add some interactive animations
+        document.querySelectorAll('.report-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+    <script>
+    function logout() {
+        alert("You've been logged out successfully! 🌿\n\nCome back soon and keep earning EcoPoints for a greener planet! 🌍");
+        localStorage.removeItem('ecoPointsUser');
+        window.location.href = 'index.html';
+    }
+</script>
+</body>
+</html>

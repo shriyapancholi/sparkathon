@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eco Products - EcoPoints</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+    .product-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+  <style>
+  body { font-family: 'Poppins', sans-serif; }
+  .bg-primary {
+    background-color: #2C5F2D;
+  }
+  .text-secondary {
+    color: #97BC62;
+  }
+</style>
+</head>
+<body class="bg-[#FAF9F6] min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-primary text-white shadow-lg">
+  <div class="container mx-auto px-4 py-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
+          <span class="text-primary font-bold">🌱</span>
+        </div>
+        <h1 class="text-2xl font-bold">EcoPoints</h1>
+      </div>
+      <nav class="hidden md:flex space-x-6 items-center">
+        <a href="dashboard.html" class="hover:text-secondary transition-colors">Dashboard</a>
+        <a href="info.html" class="text-secondary font-semibold">Info Hub</a>
+        <a href="eco-report.html" class="hover:text-secondary transition-colors">Eco Report</a>
+        <a href="leaderboard.html" class="hover:text-secondary transition-colors">Leaderboard</a>
+        <a href="contact.html" class="hover:text-secondary transition-colors">Contact</a>
+        <button onclick="logout()" class="bg-[#D9534F] px-4 py-1 rounded-lg text-white font-medium hover:bg-opacity-90">Logout</button>
+      </nav>
+      <button id="mobileMenuBtn" class="md:hidden">
+        <span class="text-2xl">☰</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+  <main class="px-4 pt-8 pb-16">
+
+  <div class="max-w-4xl mx-auto text-center mb-6">
+    <h2 class="text-4xl font-bold text-[#2C5F2D] mb-2">🌿 Eco-Friendly Products</h2>
+    <p class="text-gray-600 text-lg">Explore and earn EcoPoints with sustainable choices</p>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="max-w-xl mx-auto mb-10">
+    <input id="searchInput" type="text" placeholder="Search products..." 
+           class="w-full px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-primary focus:outline-none">
+  </div>
+
+  <!-- Product Grid -->
+  <div id="productGrid" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <!-- Items inserted here by JS -->
+  </div>
+
+  <script>
+    const products = [
+      { name: "Cloth Shopping Bag", category: "Carry Bags", points: 13 },
+      { name: "Paper Bag Instead of Plastic", category: "Packaging", points: 12 },
+      { name: "Milk in Glass Bottles", category: "Dairy", points: 14 },
+      { name: "LED Bulbs", category: "Electronics", points: 12 },
+      { name: "Organic Fruits", category: "Groceries", points: 13 },
+      { name: "Reusable Plastic Containers", category: "Household Items", points: 10 },
+      { name: "Refill Packs for Detergents", category: "Household Refill", points: 13 },
+      { name: "Eco-labeled Cleaning Products", category: "Household Items", points: 12 },
+      { name: "Compostable Plates", category: "Disposable Items", points: 11 },
+      { name: "Steel or Copper Water Bottles", category: "Everyday Essentials", points: 14 },
+      { name: "Shampoo Bars", category: "Personal Care", points: 12 },
+      { name: "Toothpaste in Recyclable Tubes", category: "Personal Care", points: 9 },
+      { name: "Bamboo Toothbrush", category: "Personal Care", points: 10 },
+      { name: "Rechargeable Batteries", category: "Electronics", points: 12 },
+      { name: "Reusable Kitchen Scrubbers", category: "Kitchenware", points: 10 },
+      { name: "Biodegradable Garbage Bags", category: "Home Utilities", points: 11 },
+      { name: "Solar-powered Torches", category: "Electronics", points: 13 },
+      { name: "Zero-Waste Toothpaste Tablets", category: "Personal Care", points: 12 },
+      { name: "Glass Containers", category: "Kitchenware", points: 12 },
+      { name: "Eco Gift Wrap", category: "Stationery", points: 10 }
+    ];
+
+    function createCard(product) {
+      return `
+        <div class="product-card bg-white p-6 rounded-2xl shadow-lg text-center">
+          <div class="text-4xl mb-2">🌿</div>
+          <h3 class="font-semibold text-lg text-[#2C5F2D] mb-1">${product.name}</h3>
+          <p class="text-sm text-gray-600 mb-2">${product.category}</p>
+          <p class="font-bold text-[#3BB273]">+${product.points} EcoPoints</p>
+        </div>
+      `;
+    }
+
+    function renderProducts(query = "") {
+      const grid = document.getElementById("productGrid");
+      grid.innerHTML = "";
+      const filtered = products.filter(p =>
+        p.name.toLowerCase().includes(query.toLowerCase()) ||
+        p.category.toLowerCase().includes(query.toLowerCase())
+      );
+      if (filtered.length === 0) {
+        grid.innerHTML = "<p class='col-span-full text-center text-gray-500'>No products found.</p>";
+      } else {
+        grid.innerHTML = filtered.map(createCard).join('');
+      }
+    }
+
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+      renderProducts(e.target.value);
+    });
+
+    window.addEventListener("load", () => renderProducts());
+  </script>
+  <script>
+  function logout() {
+    alert("You've been logged out successfully! 🌿\n\nCome back soon and keep earning EcoPoints for a greener planet! 🌍");
+    localStorage.removeItem('ecoPointsUser');
+    window.location.href = 'index.html';
+}
+</script>
+</body>
+</html>
