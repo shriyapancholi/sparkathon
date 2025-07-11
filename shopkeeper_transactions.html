@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoPoints Transaction Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        eco: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="mb-10">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">EcoPoints Dashboard</h1>
+            <p class="text-gray-600">Track and manage your eco-friendly transactions</p>
+            <!-- Back to Dashboard Button -->
+            <div class="mt-4">
+                <button onclick="window.location.href='dashboard.html'" class="inline-flex items-center px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors duration-200 gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Back to Dashboard
+                </button>
+            </div>
+        </div>
+        
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+
+        <!-- Filters and Controls -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <!-- Filter Buttons -->
+                <div class="flex flex-wrap gap-2">
+                    <button id="filter-all" class="filter-btn bg-eco-500 text-white px-4 py-2 rounded-lg hover:bg-eco-600 transition-colors duration-200 font-medium">
+                        All Time
+                    </button>
+                    <button id="filter-today" class="filter-btn bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium">
+                        Today
+                    </button>
+                    <button id="filter-week" class="filter-btn bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium">
+                        Last 7 Days
+                    </button>
+                    <button id="filter-month" class="filter-btn bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium">
+                        Last 30 Days
+                    </button>
+                </div>
+
+                <!-- Download Button -->
+                <button id="download-csv" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200 font-medium flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Download CSV
+                </button>
+            </div>
+        </div>
+
+        <!-- Transaction Table -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">EcoPoints</th>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date/Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transaction-table" class="bg-white divide-y divide-gray-200">
+                        <!-- Transactions will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- No Results Message -->
+            <div id="no-results" class="hidden text-center py-12">
+                <div class="text-gray-400 mb-4">
+                    <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">No transactions found</h3>
+                <p class="text-gray-500">Try adjusting your filter criteria to see more results.</p>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
+            <div class="text-sm text-gray-700">
+                Showing <span id="showing-start">1</span> to <span id="showing-end">10</span> of <span id="total-count">0</span> transactions
+            </div>
+            <div class="flex gap-2">
+                <button id="prev-btn" class="px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+                    Previous
+                </button>
+                <button id="next-btn" class="px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+                    Next
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let allTransactions = [];
+        let filteredTransactions = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let currentFilter = 'all';
+
+    function daysAgo(days) {
+    const date = new Date();
+    date.setDate(date.getDate() - days);
+    return date.toISOString();
+}
+
+        // Dummy data with recent dates for testing filters
+const dummyTransactions = [
+     { name: "Shriya Pancholi", product: "Reusable Water Bottle", points: 15, date: daysAgo(0) },
+    { name: "Arjun Sharma", product: "Solar Power Bank", points: 25, date: daysAgo(1) },
+    { name: "Priya Mehta", product: "Bamboo Toothbrush Set", points: 8, date: daysAgo(2) },
+    { name: "Rahul Kumar", product: "Organic Cotton Bag", points: 12, date: daysAgo(3) },
+    { name: "Anita Singh", product: "LED Bulb Pack", points: 18, date: daysAgo(6) },
+    { name: "Vikram Patel", product: "Compost Bin", points: 30, date: daysAgo(8) },
+    { name: "Sneha Gupta", product: "Reusable Food Wraps", points: 10, date: daysAgo(10) },
+    { name: "Amit Joshi", product: "Water Filter", points: 22, date: daysAgo(15) },
+    { name: "Kavya Reddy", product: "Solar Garden Lights", points: 35, date: daysAgo(25) },
+    { name: "Rohit Agarwal", product: "Eco-friendly Detergent", points: 14, date: daysAgo(35) }
+];
+
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeData();
+            setupEventListeners();
+            renderTransactions();
+        });
+
+        // Initialize data from localStorage or create dummy data
+
+        function initializeData() {
+    // Force override localStorage with fresh dummy data every time
+    allTransactions = dummyTransactions;
+    localStorage.setItem('ecoPointsTransactions', JSON.stringify(allTransactions));
+    filteredTransactions = [...allTransactions];
+}
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Filter buttons
+            document.getElementById('filter-all').addEventListener('click', () => applyFilter('all'));
+            document.getElementById('filter-today').addEventListener('click', () => applyFilter('today'));
+            document.getElementById('filter-week').addEventListener('click', () => applyFilter('week'));
+            document.getElementById('filter-month').addEventListener('click', () => applyFilter('month'));
+
+            // Pagination buttons
+            document.getElementById('prev-btn').addEventListener('click', () => changePage(-1));
+            document.getElementById('next-btn').addEventListener('click', () => changePage(1));
+
+            // Download CSV button
+            document.getElementById('download-csv').addEventListener('click', downloadCSV);
+        }
+
+        // Apply filter
+        function applyFilter(filter) {
+            currentFilter = filter;
+            currentPage = 1;
+
+            // Update button styles
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-eco-500', 'text-white');
+                btn.classList.add('bg-gray-100', 'text-gray-700');
+            });
+
+            const activeBtn = document.getElementById(`filter-${filter}`);
+            activeBtn.classList.remove('bg-gray-100', 'text-gray-700');
+            activeBtn.classList.add('bg-eco-500', 'text-white');
+
+            // Filter transactions
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+            filteredTransactions = allTransactions.filter(transaction => {
+                const transactionDate = new Date(transaction.date);
+                
+                switch (filter) {
+                    case 'today':
+                        return transactionDate >= today;
+                    case 'week':
+                        return transactionDate >= weekAgo;
+                    case 'month':
+                        return transactionDate >= monthAgo;
+                    default:
+                        return true;
+                }
+            });
+
+            renderTransactions();
+        }
+
+        // Change page
+        function changePage(direction) {
+            const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+            const newPage = currentPage + direction;
+
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                renderTransactions();
+            }
+        }
+
+        // Render transactions
+        function renderTransactions() {
+            const tableBody = document.getElementById('transaction-table');
+            const noResults = document.getElementById('no-results');
+            
+            if (filteredTransactions.length === 0) {
+                tableBody.innerHTML = '';
+                noResults.classList.remove('hidden');
+                updatePaginationInfo(0, 0, 0);
+                return;
+            }
+
+            noResults.classList.add('hidden');
+
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredTransactions.length);
+            const pageTransactions = filteredTransactions.slice(startIndex, endIndex);
+
+            tableBody.innerHTML = pageTransactions.map(transaction => `
+                <tr class="hover:bg-gray-50 transition-colors duration-150">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-8 w-8">
+                                <div class="h-8 w-8 rounded-full bg-eco-100 flex items-center justify-center">
+                                    <span class="text-eco-600 font-medium text-sm">${transaction.name.charAt(0)}</span>
+                                </div>
+                            </div>
+                            <div class="ml-3">
+                                <div class="text-sm font-medium text-gray-900">${transaction.name}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${transaction.product}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-eco-100 text-eco-800">
+                            +${transaction.points} points
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${formatDate(transaction.date)}
+                    </td>
+                </tr>
+            `).join('');
+
+            updatePaginationInfo(startIndex + 1, endIndex, filteredTransactions.length);
+            updatePaginationButtons();
+        }
+
+        // Format date for display
+        function formatDate(dateString) {
+    try {
+        const date = new Date(dateString);
+        
+        // Check if date is valid
+        if (isNaN(date.getTime())) {
+            return dateString; // Return original string if parsing fails
+        }
+        
+        return date.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
+    } catch (error) {
+        console.error('Error formatting date:', error);
+        return dateString;
+    }
+}
+
+        // Update pagination info
+        function updatePaginationInfo(start, end, total) {
+            document.getElementById('showing-start').textContent = start;
+            document.getElementById('showing-end').textContent = end;
+            document.getElementById('total-count').textContent = total;
+        }
+
+        // Update pagination buttons
+        function updatePaginationButtons() {
+            const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+        }
+
+        // Download CSV (dummy implementation)
+        function downloadCSV() {
+            const csvContent = [
+                ['Customer', 'Product', 'EcoPoints', 'Date/Time'],
+                ...filteredTransactions.map(t => [t.name, t.product, t.points, t.date])
+            ].map(row => row.join(',')).join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ecopoints-transactions-${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            // Show success message
+            const originalText = document.getElementById('download-csv').innerHTML;
+            document.getElementById('download-csv').innerHTML = `
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Downloaded!
+            `;
+            
+            setTimeout(() => {
+                document.getElementById('download-csv').innerHTML = originalText;
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EcoPoints - Sustainable Shopping Rewards</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'poppins': ['Poppins', 'sans-serif'],
+          },
+          colors: {
+            primary: '#2C5F2D',
+            secondary: '#97BC62',
+            'bg-custom': '#FAF9F6',
+            success: '#3BB273',
+            danger: '#D9534F',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+    input[type="tel"]::-webkit-inner-spin-button,
+    input[type="tel"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .relative input {
+      padding-right: 3rem;
+    }
+    .eye-icon {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-bg-custom min-h-screen">
+  <main class="container mx-auto px-4 py-8">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-bold text-primary mb-4">Welcome to EcoPoints!</h2>
+      <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+        Earn rewards for your sustainable shopping choices. Track your impact, earn points, and climb the leaderboard while making the planet greener! 🌱
+      </p>
+    </div>
+
+    <!-- Role Selection -->
+    <div id="roleSelection" class="text-center space-y-4">
+      <button onclick="selectCustomer()" class="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition">I am a Customer</button>
+      <button onclick="selectShopkeeper()" class="bg-secondary text-white px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition">I am a Shopkeeper</button>
+    </div>
+
+    <!-- Customer Choice -->
+    <div id="customerChoice" class="hidden text-center space-y-4 mt-8">
+      <button onclick="showSignUpForm()" class="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition">New User - Sign Up</button>
+      <button onclick="showSignInForm()" class="bg-secondary text-white px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition">Existing User - Sign In</button>
+    </div>
+
+    <!-- Sign Up Form -->
+    <div id="signUpSection" class="hidden max-w-md mx-auto bg-white rounded-2xl shadow-lg p-8 mt-6">
+      <h3 class="text-2xl font-semibold text-primary mb-6 text-center">Create Your Account</h3>
+      <form id="signUpForm" class="space-y-4">
+        <input type="text" id="signUpName" placeholder="Full Name" required class="w-full px-4 py-3 border rounded-lg" />
+        <input type="tel" id="signUpPhone" placeholder="Phone Number" maxlength="10" required class="w-full px-4 py-3 border rounded-lg" />
+        <select id="signUpCity" required class="w-full px-4 py-3 border rounded-lg">
+          <option value="">Select your city...</option>
+          <option>Mumbai</option>
+          <option>Delhi</option>
+          <option>Bangalore</option>
+          <option>Hyderabad</option>
+          <option>Ahmedabad</option>
+          <option>Chennai</option>
+          <option>Kolkata</option>
+          <option>Pune</option>
+          <option>Jaipur</option>
+          <option>Lucknow</option>
+        </select>
+        <input type="text" id="signUpArea" placeholder="Area / Locality" required class="w-full px-4 py-3 border rounded-lg" />
+        <div class="relative">
+          <input type="password" id="signUpPassword" placeholder="Password" required class="w-full px-4 py-3 border rounded-lg pr-12" />
+          <span onclick="togglePassword('signUpPassword', this)" class="eye-icon">👁️</span>
+        </div>
+        <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-semibold">Sign Up & Generate Barcode</button>
+      </form>
+    </div>
+
+    <!-- Sign In Form -->
+    <div id="signInSection" class="hidden max-w-md mx-auto bg-white rounded-2xl shadow-lg p-8 mt-6">
+      <h3 class="text-2xl font-semibold text-primary mb-6 text-center">Welcome Back</h3>
+      <form id="signInForm" class="space-y-4">
+        <input type="tel" id="signInPhone" placeholder="Phone Number" maxlength="10" required class="w-full px-4 py-3 border rounded-lg" />
+        <div class="relative">
+          <input type="password" id="signInPassword" placeholder="Password" required class="w-full px-4 py-3 border rounded-lg pr-12" />
+          <span onclick="togglePassword('signInPassword', this)" class="eye-icon">👁️</span>
+        </div>
+        <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-semibold">Sign In</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- Shopkeeper Choice -->
+<div id="shopkeeperChoice" class="hidden text-center space-y-4 mt-8">
+  <button onclick="showShopSignUpForm()" class="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition">New Shopkeeper - Sign Up</button>
+  <button onclick="showShopSignInForm()" class="bg-secondary text-white px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition">Existing Shopkeeper - Sign In</button>
+</div>
+
+<!-- Shopkeeper Sign Up Form -->
+<div id="shopSignUpSection" class="hidden max-w-md mx-auto bg-white rounded-2xl shadow-lg p-8 mt-6">
+  <h3 class="text-2xl font-semibold text-primary mb-6 text-center">Register Your Shop</h3>
+  <form id="shopSignUpForm" class="space-y-4">
+    <input type="text" id="shopName" placeholder="Shop Name" required class="w-full px-4 py-3 border rounded-lg" />
+    <input type="tel" id="shopPhone" placeholder="Phone Number" maxlength="10" required class="w-full px-4 py-3 border rounded-lg" />
+    <input type="text" id="shopCity" placeholder="City" required class="w-full px-4 py-3 border rounded-lg" />
+    <input type="password" id="shopPassword" placeholder="Password" required class="w-full px-4 py-3 border rounded-lg" />
+    <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-semibold">Sign Up</button>
+  </form>
+</div>
+
+<!-- Shopkeeper Sign In Form -->
+<div id="shopSignInSection" class="hidden max-w-md mx-auto bg-white rounded-2xl shadow-lg p-8 mt-6">
+  <h3 class="text-2xl font-semibold text-primary mb-6 text-center">Shopkeeper Login</h3>
+  <form id="shopSignInForm" class="space-y-4">
+    <input type="tel" id="signInShopPhone" placeholder="Phone Number" maxlength="10" required class="w-full px-4 py-3 border rounded-lg" />
+    <input type="password" id="signInShopPassword" placeholder="Password" required class="w-full px-4 py-3 border rounded-lg" />
+    <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-semibold">Login</button>
+  </form>
+</div>
+
+
+  <script>
+  function togglePassword(inputId, toggleIcon) {
+    const input = document.getElementById(inputId);
+    if (input.type === "password") {
+      input.type = "text";
+      toggleIcon.textContent = "🙈";
+    } else {
+      input.type = "password";
+      toggleIcon.textContent = "👁️";
+    }
+  }
+
+  function selectCustomer() {
+    document.getElementById('roleSelection').classList.add('hidden');
+    document.getElementById('customerChoice').classList.remove('hidden');
+  }
+
+  function selectShopkeeper() {
+    document.getElementById('roleSelection').classList.add('hidden');
+    document.getElementById('shopkeeperChoice').classList.remove('hidden');
+  }
+
+  function showSignUpForm() {
+    document.getElementById('customerChoice').classList.add('hidden');
+    document.getElementById('signUpSection').classList.remove('hidden');
+  }
+
+  function showSignInForm() {
+    document.getElementById('customerChoice').classList.add('hidden');
+    document.getElementById('signInSection').classList.remove('hidden');
+  }
+
+  function showShopSignUpForm() {
+    document.getElementById('shopkeeperChoice').classList.add('hidden');
+    document.getElementById('shopSignUpSection').classList.remove('hidden');
+  }
+
+  function showShopSignInForm() {
+    document.getElementById('shopkeeperChoice').classList.add('hidden');
+    document.getElementById('shopSignInSection').classList.remove('hidden');
+  }
+
+  // Customer Sign-Up
+  document.getElementById('signUpForm')?.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const name = document.getElementById('signUpName').value.trim();
+    const phone = document.getElementById('signUpPhone').value.trim();
+    const city = document.getElementById('signUpCity').value;
+    const area = document.getElementById('signUpArea').value.trim();
+    const password = document.getElementById('signUpPassword').value;
+    const userId = 'ECO' + Date.now().toString(36).toUpperCase();
+    const user = { id: userId, name, phone, city, area, password, points: 0, transactions: [] };
+    localStorage.setItem('ecoPointsUser', JSON.stringify(user));
+    alert("Signed up successfully! Redirecting to dashboard...");
+    window.location.href = 'dashboard.html';
+  });
+
+  // Customer Sign-In
+  document.getElementById('signInForm')?.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const phone = document.getElementById('signInPhone').value.trim();
+    const password = document.getElementById('signInPassword').value;
+    const savedUser = JSON.parse(localStorage.getItem('ecoPointsUser'));
+    if (savedUser && savedUser.phone === phone) {
+      if (savedUser.password === password) {
+        alert("Welcome back! Redirecting to dashboard...");
+        window.location.href = 'dashboard.html';
+      } else {
+        alert("Incorrect password. Please try again.");
+      }
+    } else {
+      alert("No account found with this phone number.");
+    }
+  });
+
+  // Shopkeeper Sign-Up
+  document.getElementById('shopSignUpForm')?.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const name = document.getElementById('shopName').value.trim();
+    const phone = document.getElementById('shopPhone').value.trim();
+    const city = document.getElementById('shopCity').value.trim();
+    const password = document.getElementById('shopPassword').value.trim();
+
+    const shopId = 'SHOP' + Date.now().toString(36).toUpperCase();
+    const shop = { id: shopId, name, phone, city, password, transactions: [] };
+    localStorage.setItem('ecoShopkeeper', JSON.stringify(shop));
+
+
+    alert("Shopkeeper registered! Redirecting...");
+    window.location.href = 'dashboard.html';
+  });
+
+  // Shopkeeper Sign-In
+  document.getElementById('shopSignInForm')?.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const phone = document.getElementById('signInShopPhone').value.trim();
+    const password = document.getElementById('signInShopPassword').value.trim();
+    const savedShop = JSON.parse(localStorage.getItem('ecoShopkeeper'));
+
+    if (savedShop && savedShop.phone === phone && savedShop.password === password) {
+      alert("Login successful! Redirecting...");
+      window.location.href = 'dashboard.html';
+    } else {
+      alert("Invalid phone or password.");
+    }
+  });
+</script>
+
+</body>
+</html>

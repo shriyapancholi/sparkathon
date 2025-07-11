@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoPoints - Shopkeeper Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'eco-green': '#10B981',
+                        'eco-light': '#D1FAE5',
+                        'eco-dark': '#047857'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">
+                        <i class="fas fa-store text-eco-green mr-2"></i>
+                        Welcome, <span id="welcomeStoreName"></span>! 🌱
+                    </h1>
+                    <p class="text-gray-600" id="currentDateTime"></p>
+                </div>
+                <button id="logoutBtn" 
+                        class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors duration-200">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Daily Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-105 transition-transform duration-200">
+                <div class="flex items-center">
+                    <div class="bg-eco-light rounded-full p-3">
+                        <i class="fas fa-coins text-eco-green text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Total EcoPoints Given</p>
+                        <p class="text-2xl font-bold text-gray-800" id="totalPointsToday">0</p>
+                        <p class="text-xs text-green-600 mt-1">
+                            <i class="fas fa-arrow-up mr-1"></i>Today
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-105 transition-transform duration-200">
+                <div class="flex items-center">
+                    <div class="bg-blue-100 rounded-full p-3">
+                        <i class="fas fa-receipt text-blue-500 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Transactions Today</p>
+                        <p class="text-2xl font-bold text-gray-800" id="transactionsToday">0</p>
+                        <p class="text-xs text-blue-600 mt-1">
+                            <i class="fas fa-clock mr-1"></i>Live count
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-105 transition-transform duration-200">
+                <div class="flex items-center">
+                    <div class="bg-purple-100 rounded-full p-3">
+                        <i class="fas fa-star text-purple-500 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Most Frequent Product</p>
+                        <p class="text-lg font-bold text-gray-800" id="mostFrequentProduct">-</p>
+                        <p class="text-xs text-purple-600 mt-1">
+                            <i class="fas fa-trophy mr-1"></i>Top seller
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Bar -->
+        <div class="bg-white rounded-xl shadow-lg p-4 mb-8">
+            <div class="flex flex-wrap gap-4 justify-center">
+                <button id="quickScanBtn" 
+                        class="bg-eco-green text-white px-6 py-3 rounded-lg hover:bg-eco-dark transition-colors duration-200 flex items-center">
+                    <i class="fas fa-qrcode mr-2"></i>Quick Scan
+                </button>
+                <a href="transactions.html" class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center">
+                <i class="fas fa-list mr-2"></i>All Transactions
+            </a>
+
+                <button id="exportBtn" 
+                        class="bg-purple-500 text-white px-6 py-3 rounded-lg hover:bg-purple-600 transition-colors duration-200 flex items-center">
+                    <i class="fas fa-download mr-2"></i>Export Data
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Scanner Section -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-6">
+                    <i class="fas fa-qrcode text-eco-green mr-2"></i>QR Code / Barcode Scanner
+                </h2>
+                
+                <div class="text-center mb-6">
+                    <div class="bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg p-8 mb-4 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-r from-eco-green/10 to-blue-500/10"></div>
+                        <div class="relative z-10">
+                            <i class="fas fa-camera text-gray-400 text-4xl mb-4"></i>
+                            <p class="text-gray-600 font-medium">Camera Scanner</p>
+                            <p class="text-sm text-gray-500 mt-2">Position QR code in the frame</p>
+                            <div class="mt-4 flex justify-center">
+                                <div class="w-32 h-32 border-2 border-dashed border-eco-green rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-crosshairs text-eco-green text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="simulateScanBtn" 
+                            class="bg-eco-green text-white px-8 py-3 rounded-lg hover:bg-eco-dark transition-colors duration-200 shadow-lg">
+                        <i class="fas fa-qrcode mr-2"></i>Simulate Scan
+                    </button>
+                </div>
+
+                <!-- User Info Display -->
+                <div id="userInfo" class="hidden bg-gradient-to-r from-eco-light to-blue-50 rounded-lg p-4 mb-4 border border-eco-green/20">
+                    <h3 class="font-semibold text-eco-dark mb-3 flex items-center">
+                        <i class="fas fa-user-circle mr-2"></i>Customer Information:
+                    </h3>
+                    <div class="grid grid-cols-1 gap-2">
+                        <p class="flex items-center"><i class="fas fa-user text-gray-500 w-4 mr-2"></i><strong>Name:</strong> <span id="customerName" class="ml-2"></span></p>
+                        <p class="flex items-center"><i class="fas fa-map-marker-alt text-gray-500 w-4 mr-2"></i><strong>City:</strong> <span id="customerCity" class="ml-2"></span></p>
+                        <p class="flex items-center"><i class="fas fa-coins text-eco-green w-4 mr-2"></i><strong>Total Points:</strong> <span id="customerPoints" class="ml-2 font-bold text-eco-green"></span> 🌱</p>
+                    </div>
+                </div>
+
+                <!-- Product Selector -->
+                <div class="space-y-4">
+                    <h3 class="font-semibold text-gray-800 flex items-center">
+                        <i class="fas fa-shopping-cart text-eco-green mr-2"></i>Select Product:
+                    </h3>
+                    <select id="productSelector" 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-eco-green focus:border-transparent bg-white">
+                        <option value="">Choose a sustainable product...</option>
+                    </select>
+                    
+                    <div id="productInfo" class="hidden bg-gradient-to-r from-blue-50 to-eco-light rounded-lg p-4 border border-blue-200">
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm text-blue-800 flex items-center">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                This product gives <strong id="productPoints" class="mx-1"></strong> EcoPoints
+                            </p>
+                            <div class="bg-eco-green text-white px-3 py-1 rounded-full text-xs font-bold">
+                                <i class="fas fa-leaf mr-1"></i>Eco-Friendly
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="confirmPurchaseBtn" 
+                            class="w-full bg-gradient-to-r from-eco-green to-eco-dark text-white py-4 px-6 rounded-lg font-semibold hover:from-eco-dark hover:to-eco-green transition-all duration-200 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed shadow-lg transform hover:scale-105 disabled:hover:scale-100"
+                            disabled>
+                        <i class="fas fa-check mr-2"></i>Confirm Purchase & Award Points
+                    </button>
+                </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <!-- <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-gray-800">
+                        <i class="fas fa-history text-eco-green mr-2"></i>Recent Transactions
+                    </h2>
+                    <div class="flex gap-2">
+                        <button id="refreshTransactionsBtn" 
+                                class="bg-gray-500 text-white px-3 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-200 text-sm">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button id="exportTodayBtn" 
+                                class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200 text-sm">
+                            <i class="fas fa-download mr-2"></i>Export Today
+                        </button>
+                    </div>
+                </div>
+
+                <-- Transaction Filters -->
+                <!-- <div class="mb-4 flex flex-wrap gap-2">
+                    <button class="filter-btn active bg-eco-green text-white px-3 py-1 rounded-full text-xs" data-filter="all">
+                        All
+                    </button>
+                    <button class="filter-btn bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs hover:bg-gray-300" data-filter="today">
+                        Today
+                    </button>
+                    <button class="filter-btn bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs hover:bg-gray-300" data-filter="week">
+                        This Week
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-gray-200 bg-gray-50">
+                                <th class="text-left py-3 px-3 font-semibold text-gray-700">Customer</th>
+                                <th class="text-left py-3 px-3 font-semibold text-gray-700">Product</th>
+                                <th class="text-left py-3 px-3 font-semibold text-gray-700">Points</th>
+                                <th class="text-left py-3 px-3 font-semibold text-gray-700">Date/Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTable">
+                            <tr>
+                                <td colspan="4" class="text-center py-12 text-gray-500">
+                                    <div class="flex flex-col items-center">
+                                        <i class="fas fa-inbox text-4xl mb-4 text-gray-300"></i>
+                                        <p class="text-lg font-medium">No transactions yet</p>
+                                        <p class="text-sm mt-1">Start scanning to see transactions here</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> -->
+
+                <!-- Pagination -->
+                <!-- <div id="pagination" class="hidden mt-4 flex justify-between items-center">
+                    <p class="text-sm text-gray-600">
+                        Showing <span id="showingFrom">1</span> to <span id="showingTo">10</span> of <span id="totalTransactions">0</span> transactions
+                    </p>
+                    <div class="flex gap-2">
+                        <button id="prevPageBtn" class="bg-gray-200 text-gray-700 px-3 py-1 rounded hover:bg-gray-300 disabled:opacity-50" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button id="nextPageBtn" class="bg-gray-200 text-gray-700 px-3 py-1 rounded hover:bg-gray-300 disabled:opacity-50" disabled>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>  -->
+
+        <!-- Store Performance Section -->
+        <div class="mt-8 bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-6">
+                <i class="fas fa-chart-line text-eco-green mr-2"></i>Store Performance
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="text-center p-4 bg-gradient-to-br from-eco-light to-green-100 rounded-lg">
+                    <i class="fas fa-calendar-day text-eco-green text-2xl mb-2"></i>
+                    <p class="text-sm text-gray-600">Today's Revenue Impact</p>
+                    <p class="text-xl font-bold text-eco-dark" id="todayRevenue">$0</p>
+                </div>
+                
+                <div class="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg">
+                    <i class="fas fa-users text-blue-500 text-2xl mb-2"></i>
+                    <p class="text-sm text-gray-600">Unique Customers</p>
+                    <p class="text-xl font-bold text-blue-600" id="uniqueCustomers">0</p>
+                </div>
+                
+                <div class="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg">
+                    <i class="fas fa-trophy text-purple-500 text-2xl mb-2"></i>
+                    <p class="text-sm text-gray-600">Best Hour</p>
+                    <p class="text-xl font-bold text-purple-600" id="bestHour">-</p>
+                </div>
+                
+                <div class="text-center p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg">
+                    <i class="fas fa-leaf text-orange-500 text-2xl mb-2"></i>
+                    <p class="text-sm text-gray-600">Eco Impact Score</p>
+                    <p class="text-xl font-bold text-orange-600" id="ecoScore">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full transform scale-95 transition-transform duration-200">
+            <div class="text-center">
+                <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check text-green-500 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Transaction Successful! 🎉</h3>
+                <p class="text-gray-600 mb-4" id="successMessage"></p>
+                <div class="flex gap-3">
+                    <button id="closeModalBtn" 
+                            class="flex-1 bg-eco-green text-white px-6 py-2 rounded-lg hover:bg-eco-dark transition-colors duration-200">
+                        Close
+                    </button>
+                    <button id="newTransactionBtn" 
+                            class="flex-1 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200">
+                        New Transaction
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 flex items-center">
+            <i class="fas fa-spinner fa-spin text-eco-green text-xl mr-3"></i>
+            <span class="text-gray-700">Processing transaction...</span>
+        </div>
+    </div>
+
+    <!-- <script src="dashboard.js"></script> -->
+
+    <script>
+  document.getElementById('logoutBtn').addEventListener('click', function () {
+    // Optional: clear localStorage or session data if you're storing login info
+    localStorage.removeItem('ecoPointsUser');
+    alert('You have been logged out.');
+    window.location.href = 'index.html';
+  });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Get full transactions (NOT just from a single user)
+    const allTransactions = JSON.parse(localStorage.getItem('ecoPointsTransactions')) || [];
+
+    if (allTransactions.length === 0) {
+      alert("No transactions to export.");
+      return;
+    }
+
+    doc.setFontSize(16);
+    doc.text("EcoPoints - All Transactions Report", 20, 20);
+    doc.setFontSize(12);
+    doc.text(`Total Transactions: ${allTransactions.length}`, 20, 30);
+
+    let y = 40;
+    doc.text("Customer", 20, y);
+    doc.text("Product", 70, y);
+    doc.text("Points", 130, y);
+    doc.text("Date/Time", 160, y);
+    y += 10;
+
+    allTransactions.forEach(txn => {
+      doc.text(txn.name || '-', 20, y);
+      doc.text(txn.product || '-', 70, y);
+      doc.text(String(txn.points || '0'), 130, y);
+      doc.text(txn.date || '-', 160, y);
+      y += 10;
+      if (y > 270) {
+        doc.addPage();
+        y = 20;
+      }
+    });
+
+    doc.save("All_EcoPoints_Transactions.pdf");
+  });
+</script>
+
+</body>
+</html>
