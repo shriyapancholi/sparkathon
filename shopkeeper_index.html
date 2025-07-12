@@ -225,7 +225,7 @@
 
 
     alert("Shopkeeper registered! Redirecting...");
-    window.location.href = 'dashboard.html';
+    window.location.href = 'shopkeeper_dashboard.html';
   });
 
   // Shopkeeper Sign-In
@@ -237,7 +237,7 @@
 
     if (savedShop && savedShop.phone === phone && savedShop.password === password) {
       alert("Login successful! Redirecting...");
-      window.location.href = 'dashboard.html';
+      window.location.href = 'shopkeeper_dashboard.html';
     } else {
       alert("Invalid phone or password.");
     }

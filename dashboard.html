@@ -198,7 +198,7 @@
                 document.getElementById('moneySaved').textContent = `₹${moneySaved}`;
                 document.getElementById('co2Saved').textContent = `${co2Saved} kg`;
             } else {
-                window.location.href = 'index.html';
+                window.location.href = 'shopkeeper_index.html';
             }
         }
 
@@ -206,7 +206,7 @@
             localStorage.removeItem('ecoPointsUser');
             alert("You've been logged out successfully! \nThanks for contributing to a greener tomorrow.\nRedirecting to sign-in...");
             setTimeout(() => {
-                window.location.href = 'index.html';
+                window.location.href = 'shopkeeper_index.html';
             }, 2000);
         }
 
